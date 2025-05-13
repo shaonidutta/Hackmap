@@ -96,6 +96,7 @@ HackMap offers a comprehensive set of features designed to enhance the hackathon
   - Comment and endorsement alerts
   - Hackathon deadline reminders
   - System announcements
+  - Email notifications for team invitations
 
 - **User Experience**
   - Responsive design for all devices
@@ -151,6 +152,9 @@ HackMap leverages modern technologies to deliver a robust, scalable, and maintai
   - [bcrypt](https://www.npmjs.com/package/bcrypt) - For password hashing
   - [JSON Web Tokens](https://jwt.io/) - For stateless authentication
   - [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) - For cross-origin resource sharing
+
+- **Communication**
+  - [Nodemailer](https://nodemailer.com/) - For sending email notifications
 
 - **Development Tools**
   - [Nodemon](https://nodemon.io/) - For automatic server restarts during development
@@ -253,7 +257,8 @@ hackmap/
 │   │
 │   ├── utils/                  # Utility functions
 │   │   ├── auth.utils.js
-│   │   └── common.utils.js
+│   │   ├── common.utils.js
+│   │   └── email.utils.js        # Email sending utilities
 │   │
 │   ├── .env.example            # Example environment variables
 │   ├── index.js                # Entry point
@@ -552,6 +557,34 @@ Contributions to HackMap are welcome! Here's how you can contribute:
 - Update the README.md with details of changes if applicable
 - The PR should work in all environments (Windows, macOS, Linux)
 
+## Project Assumptions
+
+The HackMap project is built on several key assumptions that guide its design and implementation:
+
+1. **Authentication**: Users must be authenticated to access most API endpoints
+2. **Organizer Separation**: A user cannot be both an organizer and a participant in the same hackathon
+3. **Team Membership**: Users can be members of multiple teams, but only one team per hackathon
+4. **Email Delivery**: Email delivery is not guaranteed and the system will continue to function even if emails fail to send
+5. **Database Integrity**: The database maintains referential integrity through foreign key constraints
+6. **Client-Side Validation**: While the server performs validation, client-side validation is also expected
+7. **Stateless API**: The API is designed to be stateless, with all necessary information included in each request
+8. **Notification System**: Notifications are stored in the database and can be retrieved by users
+9. **Email Configuration**: Email configuration is optional and the system will work without it
+
+## Email Notification System
+
+The application includes an email notification system for team invitations:
+
+1. **Implementation**: Uses nodemailer with Gmail SMTP for sending emails
+2. **Fallback Mechanism**: If email credentials are not provided, falls back to logging emails to console
+3. **Email Templates**: HTML templates for professional-looking emails
+4. **Triggered Events**: Emails are sent when:
+   - A user is invited to join a team
+
+To configure email notifications:
+- For Gmail: Set `EMAIL_USERNAME`, `EMAIL_PASSWORD`, and `EMAIL_FROM_NAME` in .env
+- For other SMTP servers: Set `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`, and `EMAIL_FROM`
+
 ## Frequently Asked Questions
 
 ### General
@@ -569,6 +602,9 @@ A: Yes, with some modifications. The application is designed to work with MySQL/
 
 **Q: How do I reset my password?**
 A: Currently, password reset functionality is planned for future releases.
+
+**Q: Do I need to configure email settings?**
+A: No, email configuration is optional. If not configured, the system will log email content to the console instead of sending actual emails.
 
 ## License
 

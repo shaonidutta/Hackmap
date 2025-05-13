@@ -9,6 +9,7 @@ This is the backend server for the HackMap application, providing RESTful API en
 - **Team Collaboration**: Create teams, invite members, and join existing teams
 - **Idea Sharing**: Submit project ideas, add comments, and track endorsements
 - **Notifications System**: Real-time notifications for team invitations and updates
+- **Email Notifications**: Automatic email notifications for team invitations
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ This is the backend server for the HackMap application, providing RESTful API en
 - **bcrypt**: Password hashing
 - **dotenv**: Environment variable management
 - **cors**: Cross-origin resource sharing
+- **nodemailer**: Email sending functionality
 
 ## API Documentation
 
@@ -65,11 +67,17 @@ See [db-schema.md](../db-schema.md) for the database schema.
    JWT_EXPIRES_IN=24h
 
    # Email Configuration (optional)
+   # Option 1: SMTP Configuration
    EMAIL_HOST=smtp.example.com
    EMAIL_PORT=587
    EMAIL_USER=your_email@example.com
    EMAIL_PASS=your_email_password
    EMAIL_FROM=noreply@example.com
+
+   # Option 2: Gmail Configuration (recommended)
+   EMAIL_USERNAME=your-gmail@gmail.com
+   EMAIL_PASSWORD=your-app-password
+   EMAIL_FROM_NAME=HackMap
    ```
 
 4. Set up the database:
@@ -156,7 +164,8 @@ server/
 │   └── user.routes.js
 ├── utils/              # Utility functions
 │   ├── auth.utils.js
-│   └── common.utils.js
+│   ├── common.utils.js
+│   └── email.utils.js    # Email sending utilities
 ├── .env                # Environment variables
 ├── index.js            # Entry point
 └── package.json        # Dependencies and scripts
@@ -178,6 +187,48 @@ The API uses standard HTTP status codes for error responses:
 - `500 Internal Server Error` - Server error
 
 Error responses include a message field with details about the error.
+
+## Database Structure
+
+The application uses a relational database with the following key tables:
+
+- **user**: Stores user information (id, email, username, password_hash)
+- **hackathon**: Stores hackathon details (id, title, description, start_date, end_date, organizer_id)
+- **team**: Stores team information (id, hackathon_id, name, description, join_code)
+- **team_member**: Maps users to teams (team_id, user_id)
+- **project_idea**: Stores project ideas (id, team_id, summary)
+- **project_tech**: Stores technologies used in projects (project_idea_id, tech)
+- **comment**: Stores comments on ideas (id, project_idea_id, user_id, content)
+- **endorsement**: Tracks idea endorsements (project_idea_id, user_id)
+- **notification**: Stores user notifications (id, user_id, type, team_id, sender_id, status)
+- **registration**: Tracks hackathon registrations (id, user_id, hackathon_id)
+- **registration_skill**: Stores skills for hackathon registrations (registration_id, skill)
+
+## Email Notification System
+
+The application includes an email notification system for team invitations:
+
+1. **Implementation**: Uses nodemailer with Gmail SMTP for sending emails
+2. **Fallback Mechanism**: If email credentials are not provided, falls back to logging emails to console
+3. **Email Templates**: HTML templates for professional-looking emails
+4. **Triggered Events**: Emails are sent when:
+   - A user is invited to join a team
+
+To configure email notifications:
+- For Gmail: Set `EMAIL_USERNAME`, `EMAIL_PASSWORD`, and `EMAIL_FROM_NAME` in .env
+- For other SMTP servers: Set `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`, and `EMAIL_FROM`
+
+## Project Assumptions
+
+1. **Authentication**: Users must be authenticated to access most API endpoints
+2. **Organizer Separation**: A user cannot be both an organizer and a participant in the same hackathon
+3. **Team Membership**: Users can be members of multiple teams, but only one team per hackathon
+4. **Email Delivery**: Email delivery is not guaranteed and the system will continue to function even if emails fail to send
+5. **Database Integrity**: The database maintains referential integrity through foreign key constraints
+6. **Client-Side Validation**: While the server performs validation, client-side validation is also expected
+7. **Stateless API**: The API is designed to be stateless, with all necessary information included in each request
+8. **Notification System**: Notifications are stored in the database and can be retrieved by users
+9. **Email Configuration**: Email configuration is optional and the system will work without it
 
 ## Deployment
 

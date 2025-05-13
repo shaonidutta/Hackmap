@@ -1,4 +1,5 @@
 const { query } = require('../config/db.config');
+const { sendTeamInviteEmail } = require('../utils/email.utils');
 
 /**
  * Get team details
@@ -98,6 +99,26 @@ const inviteUserToTeam = async (req, res) => {
       INSERT INTO notification (user_id, type, team_id, sender_id, status)
       VALUES (?, 'TEAM_INVITE', ?, ?, 'PENDING')
     `, [inviteeId, teamId, userId]);
+
+    // Get team name
+    const teamData = await query('SELECT name FROM team WHERE id = ?', [teamId]);
+    const teamName = teamData[0].name;
+
+    // Get inviter username
+    const inviterData = await query('SELECT username FROM user WHERE id = ?', [userId]);
+    const inviterName = inviterData[0].username;
+
+    // Get invitee email
+    const inviteeData = await query('SELECT email FROM user WHERE id = ?', [inviteeId]);
+    const inviteeEmail = inviteeData[0].email;
+
+    // Send email invitation (this won't throw errors as they're handled inside the function)
+    const emailSent = await sendTeamInviteEmail(inviteeEmail, inviterName, teamName);
+    if (emailSent) {
+      console.log(`Email invitation sent successfully to ${inviteeEmail}`);
+    } else {
+      console.log(`Email invitation could not be sent to ${inviteeEmail}, but notification was created`);
+    }
 
     res.status(201).json({
       notification_id: result.insertId,
