@@ -1,0 +1,20 @@
+# Node modules
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment variables
+server/.env
+client/.env
+
+# Specific server files to ignore
+server/fix-organizer-registrations.js
+server/seed-database.js
+server/show-all-tables.js
+server/test-db-connection.js
+
+# Ignore all .md files
+*.md
+
+# But keep README.md
+!README.md
