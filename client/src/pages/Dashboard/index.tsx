@@ -333,9 +333,22 @@ const DashboardPage = () => {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-500">Welcome back, {user?.username}!</p>
+        {/* Header with gradient background */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg my-6 p-6 text-white animate-fade-in">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div>
+              <h1 className="text-3xl font-bold">Dashboard</h1>
+              <p className="mt-2 text-blue-100">Welcome back, {user?.username}! Manage your hackathon activities here.</p>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <Link
+                to="/hackathons"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+              >
+                Browse Hackathons
+              </Link>
+            </div>
+          </div>
         </div>
 
         {isLoading ? (
@@ -367,40 +380,59 @@ const DashboardPage = () => {
         ) : (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Notifications Section */}
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-              <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg leading-6 font-medium text-gray-900">Notifications</h2>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Your recent notifications and invites.</p>
+            <div className="bg-white shadow-md hover:shadow-lg rounded-xl border border-gray-100 transition-all duration-200 animate-slide-in-left animate-delay-100">
+              <div className="px-5 py-4 flex justify-between items-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b border-gray-100">
+                <div className="flex items-center">
+                  <div className="p-2 bg-blue-100 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Notifications</h2>
+                    <p className="text-sm text-gray-500">Your recent notifications and invites</p>
+                  </div>
                 </div>
                 {notifications.filter(n => n.status === 'PENDING').length > 0 && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 shadow-sm">
                     {notifications.filter(n => n.status === 'PENDING').length} pending
                   </span>
                 )}
               </div>
-              <div className="border-t border-gray-200">
+              <div className="p-1">
                 {notifications.length === 0 ? (
-                  <div className="px-4 py-5 sm:p-6 text-center text-gray-500">
-                    No notifications yet.
+                  <div className="flex flex-col items-center justify-center py-8 px-4">
+                    <div className="bg-blue-50 p-3 rounded-full mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-500 text-center">No notifications yet. You'll see invites and updates here.</p>
                   </div>
                 ) : (
-                  <ul className="divide-y divide-gray-200">
+                  <ul className="divide-y divide-gray-100">
                     {notifications.map((notification) => (
-                      <li key={notification.id} className="px-4 py-4">
+                      <li key={notification.id} className="px-4 py-4 hover:bg-gray-50 transition-colors duration-150 rounded-lg">
                         <div className="flex justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {notification.type === 'TEAM_INVITE'
-                                ? `${notification.sender_username} invited you to join ${notification.team_name}`
-                                : `${notification.sender_username} requested to join ${notification.team_name}`}
-                            </p>
-                            <p className="text-sm text-gray-500 mt-1">
-                              {new Date(notification.created_at).toLocaleDateString()}
-                            </p>
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 mt-1">
+                              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                {notification.sender_username.charAt(0).toUpperCase()}
+                              </div>
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-900">
+                                {notification.type === 'TEAM_INVITE'
+                                  ? `${notification.sender_username} invited you to join ${notification.team_name}`
+                                  : `${notification.sender_username} requested to join ${notification.team_name}`}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {new Date(notification.created_at).toLocaleDateString()} • {new Date(notification.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                              </p>
+                            </div>
                           </div>
                           {notification.status === 'PENDING' ? (
-                            <div className="flex space-x-2">
+                            <div className="flex space-x-2 ml-2">
                               {processingNotificationId === notification.id ? (
                                 <div className="flex items-center">
                                   <Loader size="small" color="blue" />
@@ -409,13 +441,13 @@ const DashboardPage = () => {
                                 <>
                                   <button
                                     onClick={() => handleNotificationResponse(notification.id, 'ACCEPT')}
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150"
                                   >
                                     Accept
                                   </button>
                                   <button
                                     onClick={() => handleNotificationResponse(notification.id, 'DECLINE')}
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150"
                                   >
                                     Decline
                                   </button>
@@ -423,7 +455,7 @@ const DashboardPage = () => {
                               )}
                             </div>
                           ) : (
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm ${
                               notification.status === 'ACCEPTED'
                                 ? 'bg-green-100 text-green-800'
                                 : 'bg-gray-100 text-gray-800'
@@ -440,44 +472,77 @@ const DashboardPage = () => {
             </div>
 
             {/* My Teams Section */}
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-              <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg leading-6 font-medium text-gray-900">My Teams</h2>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Teams you're a member of.</p>
+            <div className="bg-white shadow-md hover:shadow-lg rounded-xl border border-gray-100 transition-all duration-200 animate-slide-in-right animate-delay-200">
+              <div className="px-5 py-4 flex justify-between items-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b border-gray-100">
+                <div className="flex items-center">
+                  <div className="p-2 bg-blue-100 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">My Teams</h2>
+                    <p className="text-sm text-gray-500">Teams you're a member of</p>
+                  </div>
                 </div>
                 <button
                   onClick={() => setShowCreateTeamModal(true)}
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
                   Create Team
                 </button>
               </div>
-              <div className="border-t border-gray-200">
+              <div className="p-1">
                 {teams.length === 0 ? (
-                  <div className="px-4 py-5 sm:p-6 text-center text-gray-500">
-                    <p>You're not a member of any teams yet.</p>
+                  <div className="flex flex-col items-center justify-center py-8 px-4">
+                    <div className="bg-blue-50 p-3 rounded-full mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-500 text-center mb-4">You're not a member of any teams yet.</p>
                     <Link
                       to="/hackathons"
-                      className="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150"
                     >
                       Browse Hackathons
                     </Link>
                   </div>
                 ) : (
-                  <ul className="divide-y divide-gray-200">
+                  <ul className="divide-y divide-gray-100">
                     {teams.map((team) => (
-                      <li key={team.team_id} className="px-4 py-4 flex items-center justify-between">
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900">{team.name}</h3>
-                          <p className="text-sm text-gray-500 mt-1">{team.description || 'No description'}</p>
+                      <li key={team.team_id} className="px-4 py-4 hover:bg-gray-50 transition-colors duration-150 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 mt-1">
+                              <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold">
+                                {team.name.charAt(0).toUpperCase()}
+                              </div>
+                            </div>
+                            <div className="ml-3">
+                              <h3 className="text-sm font-medium text-gray-900">{team.name}</h3>
+                              <p className="text-xs text-gray-500 mt-1">{team.description || 'No description'}</p>
+                              <div className="mt-2">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                  Join Code: {team.join_code}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <Link
+                            to={`/teams/${team.team_id}`}
+                            className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            View Team
+                          </Link>
                         </div>
-                        <Link
-                          to={`/teams/${team.team_id}`}
-                          className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                          View Team
-                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -487,6 +552,48 @@ const DashboardPage = () => {
           </div>
         )}
       </div>
+
+      {/* Add animation styles */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInLeft {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+
+        .animate-fade-in {
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .animate-slide-in-right {
+          animation: slideInRight 0.4s ease-out forwards;
+        }
+
+        .animate-slide-in-left {
+          animation: slideInLeft 0.4s ease-out forwards;
+        }
+
+        .animate-delay-100 {
+          animation-delay: 100ms;
+        }
+
+        .animate-delay-200 {
+          animation-delay: 200ms;
+        }
+
+        .animate-delay-300 {
+          animation-delay: 300ms;
+        }
+      `}</style>
 
       {/* Team Detail Modal */}
       {showCreateTeamModal && (
