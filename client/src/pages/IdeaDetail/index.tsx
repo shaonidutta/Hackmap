@@ -1,4 +1,5 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
+import type { FormEvent } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../Dashboard/Layout';
 import api from '../../api/axios';

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '../Dashboard/Layout';
 import api from '../../api/axios';
 import { IDEA_ENDPOINTS, TEAM_ENDPOINTS } from '../../api/urls';
-import { useAuthContext } from '../../context/AuthContext';
 import { useToastContext } from '../../context/ToastContext';
 
 
@@ -373,8 +372,6 @@ const CreateIdeaModal = ({ onClose, onCreateIdea, teams }: CreateIdeaModalProps)
 };
 
 const IdeasBoardPage = () => {
-  const { user } = useAuthContext();
-  const navigate = useNavigate();
   const { showToast } = useToastContext();
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);

@@ -49,8 +49,6 @@ const ModernDatePicker: React.FC<ModernDatePickerProps> = ({
   // Custom header component for the calendar
   const CustomHeader = ({
     date,
-    changeYear,
-    changeMonth,
     decreaseMonth,
     increaseMonth,
     prevMonthButtonDisabled,
@@ -115,7 +113,7 @@ const ModernDatePicker: React.FC<ModernDatePickerProps> = ({
               padding: 8,
             },
           },
-        ]}
+        ] as any}
         popperPlacement="bottom-start"
         showPopperArrow={false}
         fixedHeight

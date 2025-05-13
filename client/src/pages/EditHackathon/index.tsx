@@ -39,7 +39,7 @@ const EditHackathonPage = () => {
   const [teamSizeLimit, setTeamSizeLimit] = useState(4);
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
@@ -62,18 +62,18 @@ const EditHackathonPage = () => {
       try {
         setIsLoading(true);
         setError('');
-        
+
         const response = await api.get(HACKATHON_ENDPOINTS.GET_BY_ID(Number(id)));
         const hackathonData = response.data;
-        
+
         // Check if user is the organizer
         const organizerId = hackathonData.organizer_id || hackathonData.organiser_id;
         if (organizerId !== userId) {
-          showToast('error', 'You are not authorized to edit this hackathon');
+          showToast('You are not authorized to edit this hackathon', 'error');
           navigate('/hackathons');
           return;
         }
-        
+
         setHackathon(hackathonData);
         setTitle(hackathonData.title);
         setTheme(hackathonData.theme || '');
@@ -86,7 +86,7 @@ const EditHackathonPage = () => {
       } catch (err: any) {
         console.error('Error fetching hackathon:', err);
         setError(err.response?.data?.message || 'Failed to load hackathon details');
-        showToast('error', 'Failed to load hackathon details');
+        showToast('Failed to load hackathon details', 'error');
       } finally {
         setIsLoading(false);
       }
@@ -110,7 +110,7 @@ const EditHackathonPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form
     if (!title) {
       setError('Title is required');
@@ -128,7 +128,7 @@ const EditHackathonPage = () => {
     try {
       setIsSaving(true);
       setError('');
-      
+
       const requestData = {
         title,
         theme,
@@ -139,15 +139,15 @@ const EditHackathonPage = () => {
         team_size_limit: teamSizeLimit,
         tags
       };
-      
+
       await api.put(HACKATHON_ENDPOINTS.UPDATE(Number(id)), requestData);
-      
-      showToast('success', 'Hackathon updated successfully');
+
+      showToast('Hackathon updated successfully', 'success');
       navigate('/hackathons');
     } catch (err: any) {
       console.error('Error updating hackathon:', err);
       setError(err.response?.data?.message || 'Failed to update hackathon');
-      showToast('error', 'Failed to update hackathon');
+      showToast('Failed to update hackathon', 'error');
     } finally {
       setIsSaving(false);
     }
